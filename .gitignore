@@ -1,0 +1,6 @@
+.env/
+config/
+result/
+__pycache__/
+nn/
+DPIR/
