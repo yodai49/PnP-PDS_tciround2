@@ -48,7 +48,7 @@ def plot_graph_evolution():
     ]
     filename_list = filename_list_inp001
     method_list = [
-        'PnP-PDS (w/o a box const.)',
+        'PnP-PDS (NoBox)',
         'RED',
         'PnP-FBS',
         'Proposed',
@@ -86,19 +86,35 @@ def plot_graph_evolution():
 #        axes[0,index].set_title(method_list[index])
         axes.grid(color="gainsboro")
         axes.set_xlabel("iteration $n$")
+    # （中略）plot の後
     axes.set_ylim(1e-1, 1e4)
     axes.set_yscale('log')
-    axes.set_ylabel("$\\|\\nabla Q(\mathbf{x}_n)\\|_{\mathrm{sp}}^2$") # 2-norm
+    axes.set_ylabel(r"$\|\nabla Q(\mathbf{x}_n)\|_{\mathrm{sp}}^2$")
+    axes.set_xlabel("iteration $n$")
 
-    # save
-    fig.legend(loc='lower center', ncol=2, bbox_to_anchor = (0.5, 0), handletextpad = 0.7)
+    # ▼ ここで「図全体の凡例」をやめて「軸の中に凡例」を置く
+    # fig.legend(loc='lower center', ncol=2, bbox_to_anchor=(0.5, 0), handletextpad=0.7)
+    # plt.subplots_adjust(bottom=0.3)
+
+    # グラフ内右上（重なりにくい）に凡例
+    axes.legend(
+        loc='upper right',           # 配置（好みで 'best' でも可）
+        frameon=True,
+        framealpha=0.95,             # 背景をやや不透明にして線と重なっても読めるように
+        facecolor='white',
+        edgecolor='black',
+        ncol=1,                      # 列数
+        handletextpad=0.7
+    )
+
     fig.tight_layout()
-    plt.subplots_adjust(bottom=0.3)
     plt.show()
 
-    fig.savefig('./result/result-TCI-reply-instability-all/Jacob_Q_evol_inp001_averaged.png', bbox_inches="tight", pad_inches=0)
-    fig.savefig('./result/result-TCI-reply-instability-all/Jacob_Q_evol_inp001_averaged.eps', bbox_inches="tight", pad_inches=0)
-
+    # 保存はそのままでOK
+    fig.savefig('./result/result-TCI-reply-instability-all/Jacob_Q_evol_inp001_averaged.png',
+                bbox_inches="tight", pad_inches=0)
+    fig.savefig('./result/result-TCI-reply-instability-all/Jacob_Q_evol_inp001_averaged.eps',
+                bbox_inches="tight", pad_inches=0)
 
 if (__name__ == '__main__'):
     plot_graph_evolution()

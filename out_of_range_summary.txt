@@ -1,0 +1,71 @@
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/blur_blur_1_poisson1/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.002/data.npy
+  0: 0.000275
+  1: 0.000000
+  2: 0.000061
+  Average: 0.000112
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/blur_blur_1_poisson1/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.002/data.npy
+  0: 0.003250
+  1: 0.000351
+  2: 0.000137
+  Average: 0.001246
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/blur_blur_1_poisson2/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.002/data.npy
+  0: 0.000137
+  1: 0.000137
+  2: 0.000000
+  Average: 0.000092
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/blur_blur_1_poisson2/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.002/data.npy
+  0: 0.001572
+  1: 0.000412
+  2: 0.000000
+  Average: 0.000661
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/blur_blur_1_poisson10/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.0015/data.npy
+  0: 0.000046
+  1: 0.000320
+  2: 0.000000
+  Average: 0.000122
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/blur_blur_1_poisson10/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.0015/data.npy
+  0: 0.000519
+  1: 0.001892
+  2: 0.000000
+  Average: 0.000804
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson1/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy
+  0: 0.001389
+  1: 0.000214
+  2: 0.000305
+  Average: 0.000636
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson1/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy
+  0: 0.001526
+  1: 0.000015
+  2: 0.012207
+  Average: 0.004583
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson2/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy
+  0: 0.001419
+  1: 0.000015
+  2: 0.002274
+  Average: 0.001236
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson2/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy
+  0: 0.001617
+  1: 0.000336
+  2: 0.007965
+  Average: 0.003306
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson10/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.001/data.npy
+  0: 0.002167
+  1: 0.000046
+  2: 0.004013
+  Average: 0.002075
+
+File: ./result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson10/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.001/data.npy
+  0: 0.002380
+  1: 0.000183
+  2: 0.004547
+  Average: 0.002370

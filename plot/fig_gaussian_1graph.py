@@ -20,7 +20,7 @@ def plot_graph_evolution():
     plt.rcParams["legend.handletextpad"] = 3. # 凡例の線と文字の距離の長さ
     plt.rcParams["legend.markerscale"] = 1 # 点がある場合のmarker scale
     plt.rcParams["legend.borderaxespad"] = 0. # 凡例の端とグラフの端を合わせる
-    plt.rcParams["figure.figsize"] = (18, 6)
+    plt.rcParams["figure.figsize"] = (18, 5)
 
 #    filename = './result/result-A-20240319/DATA_A-RED-DnCNN_blur_0.010_(ILSVRC2012_val_00044012.JPEG.png)_alpha10000_lambda0.400.npy'
 #    filename = './result/result-A-20240319/DATA_A-PnPPDS-unstable-DnCNN_random_sampling_0.010_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.8200000000000001_lambda10000.npy'
@@ -29,20 +29,21 @@ def plot_graph_evolution():
     filename_list = [
 #        './result/result-A-20240730/DATA_A-PnPFBS-DnCNN_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha10000_lambda1.990.npy',
 #        './result/result-A-20240730/DATA_A-PnPFBS-DnCNN_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha10000_lambda1.990.npy',
-         './result/result-test/DATA_A-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.01_dict_blur_0.010_300_(ILSVRC2012_val_00002289.JPEG.png)_alpha10000_lambda10000_gamma10.100_gamma24.999_max_iter1200.npy',
-         './result/result-test/DATA_A-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.01_dict_blur_0.010_300_(ILSVRC2012_val_00002289.JPEG.png)_alpha10000_lambda10000_gamma10.100_gamma24.999_max_iter1200.npy',
+#         './result/result-test/DATA_A-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.01_dict_blur_0.010_300_(ILSVRC2012_val_00002289.JPEG.png)_alpha10000_lambda10000_gamma10.100_gamma24.999_max_iter1200.npy',
+#         './result/result-test/DATA_A-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.01_dict_blur_0.010_300_(ILSVRC2012_val_00002289.JPEG.png)_alpha10000_lambda10000_gamma10.100_gamma24.999_max_iter1200.npy',
 #        './result/result-test/DATA_A-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.01_dict_blur_0.010_300_(ILSVRC2012_val_00002289.JPEG.png)_alpha10000_lambda10000_gamma10.400_gamma21.249_max_iter1200.npy',
 #        './result/result-A-20240730/DATA_A-PnPPDS-DnCNN-wo-constraint_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.920_lambda10000.npy',
-#        './result/result-A-20240730/DATA_A-Proposed_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.920_lambda10000.npy',
+        './result/result-A-20240730/DATA_A-PnPPDS-unstable-DnCNN_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.8200000000000001_lambda10000.npy',
+        './result/result-A-20240730/DATA_A-Proposed_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.920_lambda10000.npy',
 #        './result/result-A-20240730/DATA_A-PnPPDS-unstable-DnCNN_random_sampling_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.8200000000000001_lambda10000.npy',
 #        './result/result-A-20240730/DATA_A-PnPPDS-DnCNN-wo-constraint_random_sampling_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.8200000000000001_lambda10000.npy',
 #        './result/result-A-20240730/DATA_A-Proposed_random_sampling_0.005_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.8200000000000001_lambda10000.npy'
     ] 
     method_list = [
- #       'PnP-PDS (Unstable)',
+       'PnP-PDS (Unstable)',
 #        'PnP-PDS (w/o a box const.)',
         'Proposed',
-        'Proposed',
+#        'Proposed',
 #        'Proposed',
     ]
     plotColor = ['#00D', '#D00', '#0D0', '#D0D', '#DD0', '#00D0', '#D00D']
@@ -77,24 +78,30 @@ def plot_graph_evolution():
             y = each_data['PSNR_evolution']
             axes[0].plot(y,  color=plotColor[index], label = label)
             y = each_data['c_evolution']
-            axes[1].plot(y,  color=plotColor[index])
+            axes[1].plot(y,  color=plotColor[index], label = label)
 
 #        axes[0,index].set_title(method_list[index])
         axes[index].grid(color="gainsboro")
         axes[index].set_xlabel("iteration $n$")
-    axes[0].set_ylim(8, 40)
+    axes[0].set_ylim(3, 37)
     axes[0].set_ylabel("PSNR")
-    #axes[1].set_ylim(pow(10,-5)*0.8, pow(10, -0.5))
+    axes[1].set_ylim(pow(10,-5)*0.2, pow(10, -0.9))
     axes[1].set_yscale('log')
     axes[1].set_ylabel("$c_n$")
 
-    # save
-    fig.legend(loc='lower center', ncol=2, bbox_to_anchor = (0.5, 0), handletextpad = 0.7)
+    axes[0].legend(            
+        loc='lower right',
+        frameon=True, facecolor='white', edgecolor='black',
+        framealpha=0.95, handletextpad=0.7)
+    axes[1].legend(            
+        loc='lower right',
+        frameon=True, facecolor='white', edgecolor='black',
+        framealpha=0.95, handletextpad=0.7)
     fig.tight_layout()
     plt.subplots_adjust(bottom=0.25)
     plt.show()
-    fig.savefig('./result/result-test/graph_gaussian_evolution_blur_2.png', bbox_inches="tight", pad_inches=0.1)
-    fig.savefig('./result/result-test/graph_gaussian_evolution_blur_2.eps', bbox_inches="tight", pad_inches=0.1)
+    fig.savefig('./result/result-test/Gaussian_evolution.png', bbox_inches="tight", pad_inches=0.1)
+    fig.savefig('./result/result-test/Gaussian_evolution.eps', bbox_inches="tight", pad_inches=0.1)
 
 
 
