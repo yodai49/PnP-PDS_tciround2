@@ -87,8 +87,9 @@ def test_iter(x_0, x_obsrv, x_true, phi, adj_phi, gamma1, gamma2, alpha_s, alpha
         sigmas = torch.tensor(sigmas).to(device)
         rhos = torch.tensor(rhos).to(device)
         
-    start_time = time.process_time()
+    totaltime = 0
     for i in range(max_iter):
+        start_time = time.process_time()
         x_prev = x_n
         s_prev = s_n
 
@@ -289,6 +290,10 @@ def test_iter(x_0, x_obsrv, x_true, phi, adj_phi, gamma1, gamma2, alpha_s, alpha
             print("Unknown method:", method)
             return x_n, s_n+0.5, c, psnr_data, ssim_data, average_time
 
+        torch.cuda.synchronize(); 
+        end_time = time.process_time()
+        totaltime+=end_time-start_time
+
         c[i] = np.linalg.norm((x_n - x_prev).flatten(), 2) / np.linalg.norm(x_prev.flatten(), 2)
         if (c[i] < -1):
             print("Convergence detected at iteration", i)
@@ -299,6 +304,11 @@ def test_iter(x_0, x_obsrv, x_true, phi, adj_phi, gamma1, gamma2, alpha_s, alpha
 
         psnr_data[i] = eval_psnr(x_true, x_n)
         ssim_data[i] = eval_ssim(x_true, x_n)
+        if False and ((i % 10 == 0) or (i == 0) or (i == max_iter - 1)):
+            print(f"[{method}] iter {i+1:4d}/{max_iter:4d} | "
+                  f"PSNR={psnr_data[i]:.2f} dB | SSIM={ssim_data[i]:.4f} | "
+                  f"rel_change={c[i]:.3e} | "
+                  f"out_of_range={out_of_range_ratio[i]*100:.2f}%")
 #        evol_data = np.append(evol_data, x_n)  # iterationごとの変化を追いたい場合には入れる
 #        if(method.find('Proposed') != -1):
 #            const = i * 2 / max_iter
@@ -321,9 +331,7 @@ def test_iter(x_0, x_obsrv, x_true, phi, adj_phi, gamma1, gamma2, alpha_s, alpha
         #else:
         #    fne_data[i] = compute_reg(x_n, denoiser_J, reg_fun)
 
-    torch.cuda.synchronize(); 
-    end_time = time.process_time()
-    average_time = (end_time - start_time)/max_iter
+    average_time = totaltime/max_iter
 
     others_data = {}
     others_data['evol_data'] = evol_data

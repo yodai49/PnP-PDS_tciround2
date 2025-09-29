@@ -3,78 +3,95 @@ import numpy as np
 import csv
 
 def plot_graph_evolution():
-    ## Reference: https://qiita.com/MENDY/items/fe9b0c50383d8b2fd919
-    plt.rcParams['font.family'] = 'Times New Roman' # font familyの設定
-    plt.rcParams['mathtext.fontset'] = 'stix' # math fontの設定
-    plt.rcParams["font.size"] = 16 # 全体のフォントサイズが変更されます。
- #   plt.rcParams['xtick.labelsize'] = 12 # 軸だけ変更されます。
- #   plt.rcParams['ytick.labelsize'] = 12 # 軸だけ変更されます
-    plt.rcParams['xtick.direction'] = 'in' # x axis in
-    plt.rcParams['ytick.direction'] = 'in' # y axis in 
-    plt.rcParams['axes.linewidth'] = 1.0 # axis line width
-    plt.rcParams["legend.fancybox"] = False # 丸角
-    plt.rcParams["legend.framealpha"] = 1 # 透明度の指定、0で塗りつぶしなし
-    plt.rcParams["legend.edgecolor"] = 'black' # edgeの色を変更
-#    plt.rcParams["legend.handlelength"] = 1 # 凡例の線の長さを調節
-#    plt.rcParams["legend.labelspacing"] = 5. # 垂直方向の距離の各凡例の距離
-    plt.rcParams["legend.handletextpad"] = 3. # 凡例の線と文字の距離の長さ
-    plt.rcParams["legend.markerscale"] = 1 # 点がある場合のmarker scale
-    plt.rcParams["legend.borderaxespad"] = 0. # 凡例の端とグラフの端を合わせる
+    plt.rcParams['font.family'] = 'Times New Roman'
+    plt.rcParams['mathtext.fontset'] = 'stix'
+    plt.rcParams["font.size"] = 16
+    plt.rcParams['xtick.direction'] = 'in'
+    plt.rcParams['ytick.direction'] = 'in'
+    plt.rcParams['axes.linewidth'] = 1.0
+    plt.rcParams["legend.fancybox"] = False
+    plt.rcParams["legend.framealpha"] = 1
+    plt.rcParams["legend.edgecolor"] = 'black'
+    plt.rcParams["legend.handletextpad"] = 3.
+    plt.rcParams["legend.markerscale"] = 1
+    plt.rcParams["legend.borderaxespad"] = 0.
     plt.rcParams["figure.figsize"] =  (18, 6)
 
     filename_list = [
-#        './result/result-C-20240812/DATA_C-PnPADMM-DnCNN_blur_00000_100_(03.png)_alpha10000_lambda0.200.npy',
-#        './result/result-C-20240812/DATA_C-PnPPDS-DnCNN-wo-constraint_blur_00000_100_(03.png)_alpha10000_lambda0.001.npy',
-#        './result/result-TCI-reply-discussion2/Poisson/DATA_C-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.0075_dict_blur_00000_100_(01.png)_alpha10000_lambda0.00125_gamma10.03000.npy',
-#        './result/result-TCI-reply-discussion2/Poisson/DATA_C-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.0075_dict_blur_00000_100_(01.png)_alpha10000_lambda0.00125_gamma10.03000.npy'
-#        './result/result-C-20240812/DATA_C-Proposed_blur_00000_100_(03.png)_alpha10000_lambda0.00125.npy',
-#        './result/result-C-20240406/DATA_C-PnPADMM-DnCNN_random_sampling_00000_100_(03.png)_alpha10000_lambda0.400.npy',
-        './result/2025-09-20_21-33-16/blur_blur_1_poisson10/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy',
-        './result/2025-09-20_21-33-16/blur_blur_1_poisson10/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy',
-    ] 
-    data_list = []
-    for filename in filename_list:
-        data_list.append(np.load(filename, allow_pickle=True).item())
+        './result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson2/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy',
+        './result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson2/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy',
+#        './result/result-C-20240819/DATA_C-PnP-unstable-DnCNN_blur_00000_100_(03.png)_alpha10000_lambda80000.npy',
+#        './result/result-C-20241119(proposed-revise)/DATA_C-Proposed_blur_00000_100_(03.png)_alpha10000_lambda0.00125.npy',
+    ]
+    data_list = [np.load(fn, allow_pickle=True).item() for fn in filename_list]
+
+    # 各カラム=各メソッド
     method_list = [
-#        'PnP-ADMM',
-#        'PnP-PDS w/o box constraint',
-        'PnP-PDS (Unstable)',
         'Proposed',
+        'PnP-PDS (NoBox)',
+#        'Proposed',
+#        'PnP-PDS (Unstable)',
+    ]
+    # メソッドごとに色を固定
+    color_list = [
+        '#D00',  # Proposed
+        '#E6AB02',  # PnP-PDS (Unstable)
     ]
 
-    # plot
-#    fig = plt.figure()
     fig, axes = plt.subplots(2, len(filename_list), tight_layout=True)
 
+    for col, (method_data, method_name, color) in enumerate(zip(data_list, method_list, color_list)):
+        first_curve_plotted = False
+        for each_data in method_data['results'].values():
+            # 上段: PSNR
+            y_psnr = each_data['PSNR_evolution']
+            axes[0, col].plot(
+                y_psnr,
+                color=color,
+                linewidth=1.2,
+                label=(method_name if not first_curve_plotted else '_nolegend_')
+            )
+            # 下段: c_n
+            #y_c = each_data['c_evolution']
+            y_c = each_data['other_data']['out_of_range_ratio']
+            axes[1, col].plot(
+                y_c,
+                color=color,
+                linewidth=1.2,
+                label=(method_name if not first_curve_plotted else '_nolegend_')
+            )
+            first_curve_plotted = True
 
-#    fig.set_xlabel("$\\varepsilon$")
-#       fig.set_ylabel("PSNR [dB]")
-    plotColor = '#D00'
-    for index, each_method in enumerate(data_list):
-        for each_data in each_method['results'].values():
-            y = each_data['PSNR_evolution']
-            axes[0,index].plot(y,  label='', color=plotColor)
-            y = each_data['c_evolution']
-            axes[1,index].plot(y,  label='', color=plotColor)
+        # 体裁
+        axes[0, col].set_title(method_name)
+        axes[0, col].set_ylim(1, 29)
+        axes[0, col].set_ylabel("PSNR")
+        axes[0, col].grid(color="gainsboro")
+        axes[0, col].set_xlabel("iteration $n$")
+        # グラフ内に凡例（右上）
+        axes[0, col].legend(
+            loc='upper right',
+            frameon=True, facecolor='white', edgecolor='black',
+            framealpha=0.95, handletextpad=0.7
+        )
 
-#        axes[0,index].set_title(method_list[index])
-        axes[0,index].set_title(method_list[index])
-        axes[0,index].set_ylim(18, 29)
-        axes[0,index].set_ylabel("PSNR")
-        axes[1,index].set_ylim(pow(10,-7), pow(10, -1))
-        axes[1,index].set_yscale('log')
-        axes[1,index].set_ylabel("$c_n$")
-        for i in range(0, 2):
-            axes[i,index].grid(color="gainsboro")
-            axes[i,index].set_xlabel("iteration $n$")
+        #axes[1, col].set_ylim(1e-7, 1e-1)
+        #axes[1, col].set_yscale('log')
+        axes[1, col].set_ylabel(r"$c_n$")
+        axes[1, col].grid(color="gainsboro")
+        axes[1, col].set_xlabel("iteration $n$")
+        axes[1, col].legend(
+            loc='upper right',
+            frameon=True, facecolor='white', edgecolor='black',
+            framealpha=0.95, handletextpad=0.7
+        )
 
-    # save
+    fig.tight_layout()
     plt.show()
-    #fig.savefig('./result/result-C-20241119(proposed-revise)/graph_poisson_evolution.png', bbox_inches="tight", pad_inches=0.05)
-    #fig.savefig('./result/result-C-20241119(proposed-revise)/graph_poisson_evolution.eps', bbox_inches="tight", pad_inches=0.05)
 
-
-
+    # 保存（必要ならパスは調整）
+    # fig.savefig('graph_poisson_evolution.png', bbox_inches="tight", pad_inches=0.05)
+    # fig.savefig('graph_poisson_evolution.eps', bbox_inches="tight", pad_inches=0.05)
 
 if (__name__ == '__main__'):
     plot_graph_evolution()

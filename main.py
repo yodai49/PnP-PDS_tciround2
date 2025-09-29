@@ -132,7 +132,11 @@ def test_all_images (experimental_settings_arg = {}, method_arg = {}, configs_ar
             plt.show()
         
         timestamp_commandline = str(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"))
-        print(timestamp_commandline + '  (' + str(index+1) + '/' + str(len(path_images)) + ') PSNR:' + str(psnr[index].round(3)).ljust(6, '0') + '    SSIM:' + str(ssim[index].round(3)).ljust(6, '0') +  '   ' + filename)
+        print(timestamp_commandline + '  (' + str(index+1) + '/' + str(len(path_images)) + ') '
+            + ('Poisson alpha:' + str(poisson_alpha) if poisson_noise else 'Gaussian sigma:' + str(gaussian_nl)) + '  '
+            + 'PSNR:' + str(psnr[index].round(3)).ljust(6, '0')
+            + '    SSIM:' + str(ssim[index].round(3)).ljust(6, '0')
+            + '   ' + filename)
 
 
     # =====================================
@@ -168,41 +172,71 @@ def main():
     filepath_summary = os.path.join(folder_root, 'SUMMARY(' + str(datetime.datetime.now().strftime("%Y%m%d %H%M%S %f")) + ').txt')
     touch_textfile (filepath_summary)
 
-    noise_level_list = [3, 5, 10, 20, 30]
+    noise_level_list = [1, 2, 10]
     alpha_list = [0.82, 0.86, 0.92, 0.96, 1]
-    obs_list = ['blur']
+    obs_list = ['blur', 'random_sampling']
     method_list_P = ['A-Proposed',  'A-PnPPDS-DnCNN-wo-constraint', 'A-PnPPDS-DnCNN-clipping-layer', 'A-PDS-TV', 'A-PnPPDS-unstable-DnCNN']
     method_list_G = ['A-PnPFBS-DnCNN', 'A-RED-DnCNN']
     method_list_P = []
-    method_list_G = ['C-Proposed', 'C-PnPPDS-DnCNN-wo-constraint', 'C-PnPPDS-DnCNN-clipping-layer',]
+    method_list_G = ['C-Proposed', 'C-PnPPDS-DnCNN-wo-constraint', 'C-PnPPDS-DnCNN-clipping-layer','C-PnP-unstable-DnCNN', 'C-RED-DnCNN']
+    method_list_G = ['C-Proposed', 'C-PnPPDS-DnCNN-wo-constraint', 'C-PnPPDS-DnCNN-clipping-layer','C-PnP-unstable-DnCNN', 'C-RED-DnCNN', 'C-PnPADMM-DnCNN']
+    myLambda_list = [[0.002, 0.002, 0.0015, 0.0015],
+                     [0.00125, 0.00125, 0.001, 0.001]
+                     ]
+    myLambda_coef_list = [1, 1, 1, 4000, 0.5, 400]
+    myLambda_coef_list = [1, 1, 1, 4000, 0.5, 400]
+#    method_list_G = ['C-PnPADMM-DnCNN']
+    lambADMM_list = [0.01, 0.01]
+    myLambda_list_ADMM = [
+                        [15, 15, 10, 10,],
+                        [20, 20, 50, 50]
+                     ]
+    #method_list_G = ['C-PnPPDS-DnCNN-clipping-layer']
+#    myLambda_coef_list = [1]
 #    obs_option_list = [ ['blur_1', 'blur_2', 'blur_3', 'blur_4', 'blur_5', 'blur_6', 'blur_7', 'blur_8', 'gaussian_1_6', 'square_7'],[0.8], ]
-    obs_option_list = [ ['blur_1'],[0.8], ]
-
+    obs_option_list = [['blur_1'], [0.8]]
     architecture = 'DnCNN_nobn_nch_1_nlev_0.01_journal'
 
     for nl_ind, nl in enumerate(noise_level_list):
-        for obs in obs_list:
+        for obs_ind, obs in enumerate(obs_list):
             for obs_option in obs_option_list[obs_list.index(obs)]:
                 if (obs == 'blur'):
-                    max_iter = 1200
+                    max_iter = 4800
                     r = 1
                     blur_kernel = obs_option
                 elif (obs == 'random_sampling'):
-                    max_iter = 3000
+                    max_iter = 12000
                     r = obs_option
                     blur_kernel = 'blur_1'
                 settings =  {'gaussian_nl' : 0, 'sp_nl' : 0, 'poisson_noise' : True, 'poisson_alpha' : nl, 'deg_op' : obs, 'r' : r, 'blur_kernel' : blur_kernel}
                 configs = {'add_timestamp' : False, 'ch' : 1}
 
                 for method_G in method_list_G:
-                    architecture = 'DnCNN_nobn_nch_1_nlev_0.01_journal'
-                    if (method_G.find('DRUNet') != -1):
-                        architecture = 'drunet_color'
-                    for myLambda in [0.00125,0.0015, 0.002]:
-                        gamma1 = 0.5
-
-                        experiment_data = {'settings' : settings, 'method' : {'method' : method_G, 'max_iter' : max_iter, 'myLambda': myLambda, 'gamma1' :  gamma1, 'gamma2' :  0.99, 'm1':100, 'm2':5, 'alpha_n' : 1, 'architecture' : architecture}, 'configs' : configs}
-                        param_str = f'lamb_{myLambda:.3g}'
+                    for coef in [0.5, 1, 1.5]:
+                        if (method_G == 'C-PnP-unstable-DnCNN'):
+                            architecture = 'dncnn_15'
+                        elif (method_G.find('DRUNet') != -1):
+                            architecture = 'drunet_color'
+                        else:
+                            architecture = 'DnCNN_nobn_nch_1_nlev_0.01_journal'
+    #                    for myLambda in [0.001, 0.00125,0.0015, 0.002]:
+                        if (method_G == 'C-PnPADMM-DnCNN'):
+                            myLambda = myLambda_list_ADMM[obs_ind][nl_ind]
+                        else:
+                            myLambda = myLambda_list[obs_ind][nl_ind]
+                            myLambda *= myLambda_coef_list[method_list_G.index(method_G)]
+                        myLambda*=coef
+                        m1 = 50
+                        m2 = 5
+                        gammaInADMMStep1 = lambADMM_list[obs_ind]
+                        if (method_G == 'C-RED-DnCNN' or method_G == 'C-Proposed' or method_G == 'C-PnPPDS-DnCNN-wo-constraint' or method_G == 'C-PnPPDS-DnCNN-clipping-layer'):
+                            gamma1 = 0.5
+                            gamma2 = 1 / (gamma1 * 2)
+                        else:
+                            gamma1 = 0.0005
+                            gamma2 = 1000
+                        experiment_data = {'settings' : settings, 'method' : {'method' : method_G, 'max_iter' : max_iter, 'myLambda': myLambda, 'gamma1' :  gamma1, 'gamma2' :  gamma2, 'm1':m1, 'm2':m2, 'alpha_n' : 1, 'gammaInADMMStep1': gammaInADMMStep1,'architecture' : architecture}, 'configs' : configs}
+                        param_str = f'lamb_{(myLambda):.3g}'
 
                         path_save = {}
                         path_save['result'] = get_result_folder_name (experiment_data, folder_root, param_str)

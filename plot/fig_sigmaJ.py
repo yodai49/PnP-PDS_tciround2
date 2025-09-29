@@ -1,6 +1,16 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.colors import to_rgba
 
+def apply_bar_edge_and_fill(ax, edge_colors):
+    # ax.containers は系列ごとの BarContainer（描画順で並ぶ）
+    for i, container in enumerate(ax.containers):
+        col = edge_colors[i % len(edge_colors)]
+        r, g, b, _ = to_rgba(col)
+        for patch in container.patches:
+            patch.set_edgecolor((r, g, b, 1.0))  # 外枠＝不透明
+            patch.set_linewidth(1.3)
+            patch.set_facecolor((r, g, b, 0.8))  # 中＝同色でα=0.2
 # LaTeXラベルへの変換用マッピング
 replacement_map = {
     "reply_DnCNN_nobn_nch_3_nlev_0.0075_dict": r"$\sigma_J=0.0075$",
@@ -43,16 +53,16 @@ def plot_graph():
  #   plt.rcParams['ytick.labelsize'] = 12 # 軸だけ変更されます
     plt.rcParams['xtick.direction'] = 'in' # x axis in
     plt.rcParams['ytick.direction'] = 'in' # y axis in 
-    plt.rcParams['axes.linewidth'] = 1.0 # axis line width
+    plt.rcParams['axes.linewidth'] = 1.2 # axis line width
     plt.rcParams["legend.fancybox"] = False # 丸角
     plt.rcParams["legend.framealpha"] = 1 # 透明度の指定、0で塗りつぶしなし
-    plt.rcParams["legend.edgecolor"] = 'black' # edgeの色を変更
+    plt.rcParams["legend.edgecolor"] = '#CCC' # edgeの色を変更
 #    plt.rcParams["legend.handlelength"] = 1 # 凡例の線の長さを調節
 #    plt.rcParams["legend.labelspacing"] = 5. # 垂直方向の距離の各凡例の距離
     plt.rcParams["legend.handletextpad"] = 3. # 凡例の線と文字の距離の長さ
     plt.rcParams["legend.markerscale"] = 1 # 点がある場合のmarker scale
     plt.rcParams["legend.borderaxespad"] = 0. # 凡例の端とグラフの端を合わせる
-    plt.rcParams["figure.figsize"] =  (18, 6)
+    plt.rcParams["figure.figsize"] =  (18, 7)
 
     file_path = "./result/result-TCI-reply-discussion1/Gaussian/SUMMARY(20250604 100701 665848).txt"
 
@@ -78,13 +88,14 @@ def plot_graph():
     pivot_blur_ssim = prepare_pivot(df_blur, "SSIM")
     pivot_rs_ssim = prepare_pivot(df_rs, "SSIM")
 
-    fig, axes = plt.subplots(2, 2, figsize=(20, 6))
+    fig, axes = plt.subplots(2, 2, figsize=(20, 7))
 
     # blurプロット
     barWidth = 0.95
+    color_list = ["#65418B", "#518BD2", "#48772D", "#EED948", "#FC3D34", "#B00000", "#A00000"]
 
-    colors = ['#4784BF', '#39A869', '#F2E55C','#DE6641', '#999']  # 色を指定
-    
+    colors = ["#4156F7DD", "#6FCC39DD", "#F3DB40DD","#ED5050DD", '#777D']  # 色を指定
+
     pivot_blur_psnr.plot.bar(
         x='Gaussian_noise',
         y=pivot_blur_psnr.columns[1:],
@@ -107,7 +118,7 @@ def plot_graph():
         width = barWidth,
         color=colors
     )
-
+        
     pivot_blur_ssim.plot.bar(
         x='Gaussian_noise',
         y=pivot_blur_ssim.columns[1:],
@@ -130,13 +141,14 @@ def plot_graph():
         width = barWidth,
         color=colors
     )
-
-    legend_handles, legend_labels = axes[0, 0].get_legend_handles_labels()
     for ax in axes.flat:
         ax.legend_.remove()
         ax.set_xticklabels(ax.get_xticklabels(), rotation=0)
         ax.grid(True, axis='y',  linewidth=0.5, color='gray', alpha=0.4)
         ax.grid(True, axis='x',  linewidth=0.5, color='gray', alpha=0.4)
+        ax.set_axisbelow(True)
+    legend_handles, legend_labels = axes[0, 0].get_legend_handles_labels()
+
     plt.subplots_adjust(bottom=0.25)
 
     axes[0, 0].set_ylim(8, 40)
@@ -147,14 +159,21 @@ def plot_graph():
     axes[0, 1].tick_params(labelbottom=False)
     axes[0, 0].set_xlabel("")
     axes[0, 1].set_xlabel("")
-
+    lefts = []
+    rights = []
+    for ax in axes.flat:
+        bbox = ax.get_position()
+        lefts.append(bbox.x0)
+        rights.append(bbox.x1)
+    left = min(lefts)
+    right = max(rights)
     fig.legend(
         handles=legend_handles,
         labels=legend_labels,
-        loc='lower center',
-        bbox_to_anchor=(0.5, 0.05),
-        ncol=len(legend_labels),  # 横並び
-        title=None,
+        loc="lower center",
+        bbox_to_anchor=(left, 0.09, right - left, 0.05),  # (x, y, width, height)
+        mode="expand",
+        ncol=len(legend_labels),
     )
     plt.show()
 

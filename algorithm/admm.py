@@ -11,11 +11,12 @@ def step1ofADMMforPoisson (u, v, y, phi, adj_phi, poisson_alpha, myLambda, m, ga
     for i in range(0, MAX_ITER):
         grad = -adj_phi(y / (poisson_alpha*phi(x_n)))/poisson_alpha + adj_phi(np.ones(x_n.shape))/poisson_alpha + lambydaInStep1 * (x_n - v + u)
         x_n = x_n - gamma * grad
-        if (np.linalg.norm(grad) < 0.01):
-#            print('early stopped at i = ' + str(i))
+        x_n = np.clip(x_n, 1e-5, 1e12)
+        if (np.linalg.norm(grad) < 0.1):
+            #print('early stopped at i = ' + str(i))
             break
-#        val = -y.flatten() @ np.log(phi(x_n).flatten()*poisson_alpha) + np.ones(x_n.size) @ phi(x_n).flatten()*poisson_alpha + lambydaInStep1 / 2 * np.linalg.norm(x_n - v + u)**2
-#        print(val)
+        val = -y.flatten() @ np.log(phi(x_n).flatten()*poisson_alpha) + np.ones(x_n.size) @ phi(x_n).flatten()*poisson_alpha + lambydaInStep1 / 2 * np.linalg.norm(x_n - v + u)**2
+        #print(f"[{i:04d}] obj={val:.6e}")
     return x_n
 
 def step2ofADMM_REDforPoisson (x_n, u_prev, v_prev, beta, lambydaInStep2, path_prox, ch, m):

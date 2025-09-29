@@ -20,13 +20,13 @@ def plot_graph_evolution():
     plt.rcParams["legend.handletextpad"] = 3. # 凡例の線と文字の距離の長さ
     plt.rcParams["legend.markerscale"] = 1 # 点がある場合のmarker scale
     plt.rcParams["legend.borderaxespad"] = 0. # 凡例の端とグラフの端を合わせる
-    plt.rcParams["figure.figsize"] = (18, 6)
+    plt.rcParams["figure.figsize"] = (18, 4.5)
 
     filename_list = [
 #        './result/result-C-20240812/DATA_C-PnPADMM-DnCNN_blur_00000_100_(03.png)_alpha10000_lambda0.200.npy',
 #        './result/result-C-20240812/DATA_C-PnPPDS-DnCNN-wo-constraint_blur_00000_100_(03.png)_alpha10000_lambda0.001.npy',
-        './result/result-C-20240812/DATA_C-PnP-unstable-DnCNN_blur_00000_100_(03.png)_alpha10000_lambda80000.npy',
-        './result/result-C-20241119(proposed-revise)/DATA_C-Proposed_blur_00000_100_(03.png)_alpha10000_lambda0.00125.npy'
+        './result/result-C-20240819/DATA_C-PnP-unstable-DnCNN_blur_00000_100_(03.png)_alpha10000_lambda80000.npy',
+        './result/result-C-20241119(proposed-revise)/DATA_C-Proposed_blur_00000_100_(03.png)_alpha10000_lambda0.00125.npy',
 #        './result/result-C-20240812/DATA_C-Proposed_blur_00000_100_(03.png)_alpha10000_lambda0.00125.npy',
 #        './result/result-C-20240406/DATA_C-PnPADMM-DnCNN_random_sampling_00000_100_(03.png)_alpha10000_lambda0.400.npy',
 #        './result/result-C-20240406/DATA_C-PnP-unstable-DnCNN_random_sampling_00000_100_(03.png)_alpha10000_lambda80000.npy',
@@ -58,7 +58,7 @@ def plot_graph_evolution():
             y = each_data['PSNR_evolution']
             axes[0].plot(y,  label=label, color=plotColor[index])
             y = each_data['c_evolution']
-            axes[1].plot(y, color=plotColor[index])
+            axes[1].plot(y, label=label, color=plotColor[index])
         axes[index].grid(color="gainsboro")
         axes[index].set_xlabel("iteration $n$")
 
@@ -68,14 +68,21 @@ def plot_graph_evolution():
         axes[1].set_ylim(pow(10,-7), pow(10, -1))
         axes[1].set_yscale('log')
         axes[1].set_ylabel("$c_n$")
+        axes[0].legend(            
+            loc='lower right',
+            frameon=True, facecolor='white', edgecolor='black',
+            framealpha=0.95, handletextpad=0.7)
+        axes[1].legend(            
+            loc='upper right',
+            frameon=True, facecolor='white', edgecolor='black',
+            framealpha=0.95, handletextpad=0.7)
 
     # save
-    fig.legend(loc='lower center', ncol=2, bbox_to_anchor = (0.5, 0), handletextpad = 0.7)
     fig.tight_layout()
     plt.subplots_adjust(bottom=0.25)
     plt.show()
-    fig.savefig('./result/result-C-20241119(proposed-revise)/graph_poisson_evolution.png', bbox_inches="tight", pad_inches=0.05)
-    fig.savefig('./result/result-C-20241119(proposed-revise)/graph_poisson_evolution.eps', bbox_inches="tight", pad_inches=0.05)
+    fig.savefig('./result/result-C-20241119(proposed-revise)/Poisson_evolution.png', bbox_inches="tight", pad_inches=0.05)
+    fig.savefig('./result/result-C-20241119(proposed-revise)/Poisson_evolution.eps', bbox_inches="tight", pad_inches=0.05)
 
 
 
