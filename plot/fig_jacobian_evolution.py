@@ -21,7 +21,8 @@ def plot_graph_evolution():
     plt.rcParams["legend.markerscale"] = 1 # 点がある場合のmarker scale
     plt.rcParams["legend.borderaxespad"] = 0. # 凡例の端とグラフの端を合わせる
     plt.rcParams["figure.figsize"] = (9, 5)
-
+    plt.rcParams['xtick.labelsize'] = 22
+    plt.rcParams['ytick.labelsize'] = 22
     filename_list_deb001 = [ # Inpainting at sigma=0.01
         './result/result-TCI-reply-instability-all/DATA_A-PnPPDS-DnCNN-wo-constraint_DnCNN_nobn_nch_3_nlev_0.01_journal_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.900_lambda10000.npy',
         './result/result-TCI-reply-instability-all/DATA_A-RED-DnCNN_DnCNN_nobn_nch_3_nlev_0.01_journal_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.900_lambda10000.npy',
@@ -87,9 +88,9 @@ def plot_graph_evolution():
         axes.grid(color="gainsboro")
         axes.set_xlabel("iteration $n$")
     # （中略）plot の後
-    axes.set_ylim(1e-1, 1e4)
+    axes.set_ylim(1e-1, 5*1e3)
     axes.set_yscale('log')
-    axes.set_ylabel(r"$\|\nabla Q(\mathbf{x}_n)\|_{\mathrm{sp}}^2$")
+    axes.set_ylabel(r"$\|\nabla Q(\mathbf{u}_n)\|_{\mathrm{sp}}^2$")
     axes.set_xlabel("iteration $n$")
 
     # ▼ ここで「図全体の凡例」をやめて「軸の中に凡例」を置く

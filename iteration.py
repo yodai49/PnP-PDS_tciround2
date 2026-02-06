@@ -52,7 +52,8 @@ def test_iter(x_0, x_obsrv, x_true, phi, adj_phi, gamma1, gamma2, alpha_s, alpha
     c = np.zeros(max_iter)
     psnr_data = np.zeros(max_iter)
     ssim_data = np.zeros(max_iter)
-    evol_data = np.zeros(x_0.shape)
+    shape = (max_iter,) + x_0.shape
+    evol_data = np.zeros(shape, dtype=x_0.dtype)    #evol_data = np.zeros(x_0.shape)
     fne_data = np.zeros(max_iter)
     y1_evol = np.zeros(max_iter)
     y2_evol = np.zeros(max_iter)
@@ -304,12 +305,8 @@ def test_iter(x_0, x_obsrv, x_true, phi, adj_phi, gamma1, gamma2, alpha_s, alpha
 
         psnr_data[i] = eval_psnr(x_true, x_n)
         ssim_data[i] = eval_ssim(x_true, x_n)
-        if False and ((i % 10 == 0) or (i == 0) or (i == max_iter - 1)):
-            print(f"[{method}] iter {i+1:4d}/{max_iter:4d} | "
-                  f"PSNR={psnr_data[i]:.2f} dB | SSIM={ssim_data[i]:.4f} | "
-                  f"rel_change={c[i]:.3e} | "
-                  f"out_of_range={out_of_range_ratio[i]*100:.2f}%")
-#        evol_data = np.append(evol_data, x_n)  # iterationごとの変化を追いたい場合には入れる
+
+        evol_data[i] = x_n  # iterationごとの変化を追いたい場合には入れる
 #        if(method.find('Proposed') != -1):
 #            const = i * 2 / max_iter
 #            x1 = np.random.rand(*x_n.shape) * const
@@ -327,9 +324,15 @@ def test_iter(x_0, x_obsrv, x_true, phi, adj_phi, gamma1, gamma2, alpha_s, alpha
         y1_val_evol[i] = np.linalg.norm((gamma1 * y_n + sigma_J * n / sigma).flatten(), 2)
 
         #if np.sum(np.isnan(x_n)) > 0:
-        #    fne_data[i] = math.nan
+        fne_data[i] = np.sum(np.isnan(x_n))
         #else:
-        #    fne_data[i] = compute_reg(x_n, denoiser_J, reg_fun)
+        #fne_data[i] = compute_reg(x_n, denoiser_J, reg_fun)
+
+        #if  ((i % 10 == 0) or (i == 0) or (i == max_iter - 1)):
+        #    print(f"[{method}] iter {i+1:4d}/{max_iter:4d} | "
+        #          f"PSNR={psnr_data[i]:.2f} dB | SSIM={ssim_data[i]:.4f} | "
+        #          f"rel_change={c[i]:.3e} | "
+        #          f"fne_data={fne_data[i]:.2f}")
 
     average_time = totaltime/max_iter
 

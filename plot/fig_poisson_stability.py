@@ -15,11 +15,14 @@ def plot_graph_evolution():
     plt.rcParams["legend.handletextpad"] = 3.
     plt.rcParams["legend.markerscale"] = 1
     plt.rcParams["legend.borderaxespad"] = 0.
-    plt.rcParams["figure.figsize"] =  (18, 6)
+    plt.rcParams["figure.figsize"] =  (18, 7)
 
     filename_list = [
-        './result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson2/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy',
-        './result/TCI-round2-poisson-main 2025-09-22_20-14-05/random_sampling_poisson2/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy',
+        './result/TCI-round2-poisson-2025-09-29_21-32-56/blur_blur_1_poisson1/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.002/data.npy',
+        './result/TCI-round2-poisson-2025-09-29_21-32-56/blur_blur_1_poisson1/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.002/data.npy',
+#        './result/TCI-round2-poisson-2025-09-29_21-32-56/random_sampling_poisson1/methods/C-PnPPDS-DnCNN-wo-constraint_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy',
+#        './result/TCI-round2-poisson-2025-09-29_21-32-56/random_sampling_poisson1/methods/C-Proposed_[DnCNN_nobn_nch_1_nlev_0.01_journal/lamb_0.00125/data.npy',
+
 #        './result/result-C-20240819/DATA_C-PnP-unstable-DnCNN_blur_00000_100_(03.png)_alpha10000_lambda80000.npy',
 #        './result/result-C-20241119(proposed-revise)/DATA_C-Proposed_blur_00000_100_(03.png)_alpha10000_lambda0.00125.npy',
     ]
@@ -27,15 +30,15 @@ def plot_graph_evolution():
 
     # 各カラム=各メソッド
     method_list = [
-        'Proposed',
         'PnP-PDS (NoBox)',
+        'Proposed',
 #        'Proposed',
 #        'PnP-PDS (Unstable)',
     ]
     # メソッドごとに色を固定
     color_list = [
-        '#D00',  # Proposed
         '#E6AB02',  # PnP-PDS (Unstable)
+        '#D00',  # Proposed
     ]
 
     fig, axes = plt.subplots(2, len(filename_list), tight_layout=True)
@@ -52,8 +55,8 @@ def plot_graph_evolution():
                 label=(method_name if not first_curve_plotted else '_nolegend_')
             )
             # 下段: c_n
-            #y_c = each_data['c_evolution']
-            y_c = each_data['other_data']['out_of_range_ratio']
+            y_c = each_data['c_evolution']
+            #y_c = each_data['other_data']['out_of_range_ratio']
             axes[1, col].plot(
                 y_c,
                 color=color,
@@ -63,8 +66,8 @@ def plot_graph_evolution():
             first_curve_plotted = True
 
         # 体裁
-        axes[0, col].set_title(method_name)
-        axes[0, col].set_ylim(1, 29)
+        axes[0, col].set_title(method_name +  "  /  Deblurring")
+        axes[0, col].set_ylim(1, 35)
         axes[0, col].set_ylabel("PSNR")
         axes[0, col].grid(color="gainsboro")
         axes[0, col].set_xlabel("iteration $n$")
@@ -75,8 +78,9 @@ def plot_graph_evolution():
             framealpha=0.95, handletextpad=0.7
         )
 
-        #axes[1, col].set_ylim(1e-7, 1e-1)
-        #axes[1, col].set_yscale('log')
+        axes[1, col].set_ylim(1e-7, 1e-1)
+        #axes[1, col].set_ylim(1e-5, 1)
+        axes[1, col].set_yscale('log')
         axes[1, col].set_ylabel(r"$c_n$")
         axes[1, col].grid(color="gainsboro")
         axes[1, col].set_xlabel("iteration $n$")
@@ -90,8 +94,8 @@ def plot_graph_evolution():
     plt.show()
 
     # 保存（必要ならパスは調整）
-    # fig.savefig('graph_poisson_evolution.png', bbox_inches="tight", pad_inches=0.05)
-    # fig.savefig('graph_poisson_evolution.eps', bbox_inches="tight", pad_inches=0.05)
+    fig.savefig('./result/TCI-round2-poisson-2025-09-29_21-32-56/graph_poisson_evolution-b.png', bbox_inches="tight", pad_inches=0.05)
+    fig.savefig('./result/TCI-round2-poisson-2025-09-29_21-32-56/graph_poisson_evolution-b.eps', bbox_inches="tight", pad_inches=0.05)
 
 if (__name__ == '__main__'):
     plot_graph_evolution()

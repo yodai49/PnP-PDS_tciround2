@@ -29,11 +29,16 @@ def plot_graph_evolution():
     filename_list = [
 #        './result/result-A-20240730/DATA_A-PnPFBS-DnCNN_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha10000_lambda1.990.npy',
 #        './result/result-A-20240730/DATA_A-PnPFBS-DnCNN_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha10000_lambda1.990.npy',
-#         './result/result-test/DATA_A-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.01_dict_blur_0.010_300_(ILSVRC2012_val_00002289.JPEG.png)_alpha10000_lambda10000_gamma10.100_gamma24.999_max_iter1200.npy',
-#         './result/result-test/DATA_A-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.01_dict_blur_0.010_300_(ILSVRC2012_val_00002289.JPEG.png)_alpha10000_lambda10000_gamma10.100_gamma24.999_max_iter1200.npy',
+
+#         './result/result-TCI-reply-instability-all/DATA_A-PnPFBS-DnCNN_DnCNN_nobn_nch_3_nlev_0.01_journal_random_sampling_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.900_lambda10000.npy',
+#         './result/result-TCI-reply-instability-all/DATA_A-Proposed_DnCNN_nobn_nch_3_nlev_0.01_journal_random_sampling_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.900_lambda10000.npy',
+#         './result/result-TCI-reply-instability-all/DATA_A-PnPFBS-DnCNN_DnCNN_nobn_nch_3_nlev_0.01_journal_random_sampling_0.040_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.900_lambda10000.npy',
+#         './result/result-TCI-reply-instability-all/DATA_A-Proposed_DnCNN_nobn_nch_3_nlev_0.01_journal_random_sampling_0.040_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.900_lambda10000.npy',
+
 #        './result/result-test/DATA_A-Proposed_reply_DnCNN_nobn_nch_3_nlev_0.01_dict_blur_0.010_300_(ILSVRC2012_val_00002289.JPEG.png)_alpha10000_lambda10000_gamma10.400_gamma21.249_max_iter1200.npy',
 #        './result/result-A-20240730/DATA_A-PnPPDS-DnCNN-wo-constraint_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.920_lambda10000.npy',
         './result/result-A-20240730/DATA_A-PnPPDS-unstable-DnCNN_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.8200000000000001_lambda10000.npy',
+        './result/result-TCI-reply-DRUNet/Gaussian_lam0.23/DATA_A-PnPFBS-DRUNet_drunet_color_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha10000.npy',
         './result/result-A-20240730/DATA_A-Proposed_blur_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.920_lambda10000.npy',
 #        './result/result-A-20240730/DATA_A-PnPPDS-unstable-DnCNN_random_sampling_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.8200000000000001_lambda10000.npy',
 #        './result/result-A-20240730/DATA_A-PnPPDS-DnCNN-wo-constraint_random_sampling_0.010_300_(ILSVRC2012_val_00044012.JPEG.png)_alpha0.8200000000000001_lambda10000.npy',
@@ -42,11 +47,11 @@ def plot_graph_evolution():
     method_list = [
        'PnP-PDS (Unstable)',
 #        'PnP-PDS (w/o a box const.)',
+        'DRUNet',
         'Proposed',
 #        'Proposed',
-#        'Proposed',
     ]
-    plotColor = ['#00D', '#D00', '#0D0', '#D0D', '#DD0', '#00D0', '#D00D']
+    plotColor = ['#00D', '#0A3', '#D00', '#D0D', '#DD0', '#00D0', '#D00D']
 
     #filename_list = []
     #method_list = []
@@ -63,7 +68,7 @@ def plot_graph_evolution():
 
     # plot
 #    fig = plt.figure()
-    fig, axes = plt.subplots(1, len(filename_list), tight_layout=True)
+    fig, axes = plt.subplots(1, 2, tight_layout=True)
 
 
 #    fig.set_xlabel("$\\varepsilon$")
@@ -81,11 +86,13 @@ def plot_graph_evolution():
             axes[1].plot(y,  color=plotColor[index], label = label)
 
 #        axes[0,index].set_title(method_list[index])
-        axes[index].grid(color="gainsboro")
-        axes[index].set_xlabel("iteration $n$")
+    axes[0].grid(color="gainsboro")
+    axes[0].set_xlabel("iteration $n$")
+    axes[1].grid(color="gainsboro")
+    axes[1].set_xlabel("iteration $n$")
     axes[0].set_ylim(3, 37)
     axes[0].set_ylabel("PSNR")
-    axes[1].set_ylim(pow(10,-5)*0.2, pow(10, -0.9))
+    axes[1].set_ylim(pow(10,-6)*0.2, pow(10, -0.5))
     axes[1].set_yscale('log')
     axes[1].set_ylabel("$c_n$")
 

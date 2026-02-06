@@ -105,11 +105,14 @@ def get_folder_name_setting(experiment_data, root):
     kernel = ''
     if deg_op == 'blur':
         kernel = f"_{settings.get('blur_kernel', 'unknown_kernel')}"
+    r = ''
+    if deg_op == 'random_sampling':
+        r = f"_{settings.get('r', 'unknown_r')}"
 
     # パス構築
     folder_path = os.path.join(
         root,
-        f"{deg_op}{kernel}_{noise_str}"
+        f"{deg_op}{r}{kernel}_{noise_str}"
     )
 
     return folder_path
